@@ -1,0 +1,5 @@
+---
+applications:
+  - name: cf-hellowar
+    path: target/cf-hellowar.war
+    random-route: true

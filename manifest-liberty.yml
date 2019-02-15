@@ -1,0 +1,10 @@
+---
+applications:
+  - name: cf-hellowar
+    path: target/cf-hellowar.war
+    random-route: true
+    buildpacks:
+      - https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack.git
+    env:
+      IBM_JVM_LICENSE: "L-SMKR-AVSEUH"
+      IBM_LIBERTY_LICENSE: "L-CTUR-B4WNHE"
