@@ -1,8 +1,8 @@
-# Deploy a WAR to Cloud Foundry
+# Deploy a JavaEE app to Cloud Foundry
 
-This project shows how to deploy a WAR file to Cloud Foundry, using two options:
-  1. using the [Java Buildpack](https://github.com/cloudfoundry/java-buildpack) (leveraging Apache Tomcat)
-  2. using the [IBM WebSphere Application Server Liberty Buildpack](https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack)
+This project shows how to deploy a JavaEE app to Cloud Foundry, using two options:
+  1. [Java Buildpack](https://github.com/cloudfoundry/java-buildpack) (leveraging Apache Tomcat)
+  2. [IBM WebSphere Application Server Liberty Buildpack](https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack)
 
 Yes, that's true: you **can** [deploy a JavaEE application server to Cloud Foundry](https://content.pivotal.io/pivotal-blog/new-tools-from-pivotal-ibm-pave-the-way-for-java-ee-websphere-apps-to-move-to-cloud-foundry-and-kubernetes)!
 
@@ -23,7 +23,7 @@ $ ./mvnw tomcat7:run
 This app provides a single `HttpServlet` displaying basic informations:
 ```bash
 $ curl http://localhost:8080
-Hello WAR
+Hello JavaEE
 Java version: 11.0.1
 Java vendor: Oracle Corporation
 Server info: Apache Tomcat/7.0.47
@@ -32,7 +32,7 @@ Server info: Apache Tomcat/7.0.47
 ## Deploy to Cloud Foundry using Java Buildpack
 
 By pushing a WAR file to Cloud Foundry, the Java Buildpack will automatically
-deploy this artifact with an Apache Tomcat server.
+deploy this artifact using an Apache Tomcat server.
 
 Just push this application:
 ```bash
@@ -42,8 +42,8 @@ $ cf push
 A random URL is assigned to the app. Hit this endpoint to display basic
 informations:
 ```bash
-$ curl http://cf-hellowar-silly-kob.apps.pas.pvtl.eu
-Hello WAR
+$ curl http://cf-hellojavaee-silly-kob.apps.pas.pvtl.eu
+Hello JavaEE
 Java version: 1.8.0_192
 Java vendor: Oracle Corporation
 Server info: Apache Tomcat/8.5.34
@@ -65,8 +65,8 @@ This manifest just defines the buildpack to use as well as some license codes:
 ```yaml
 ---
 applications:
-  - name: cf-hellowar
-    path: target/cf-hellowar.war
+  - name: cf-hellojavaee
+    path: target/cf-hellojavaee.war
     random-route: true
     buildpacks:
       - https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack.git
@@ -78,7 +78,7 @@ applications:
 Your app will be deployed to Cloud Foundry in no time, using a full blown
 JavaEE application server:
 ```bash
-$ curl http://cf-hellowar-daring-springhare.apps.pas.pvtl.eu
+$ curl http://cf-hellojavaee-daring-springhare.apps.pas.pvtl.eu
 Hello WAR
 Java version: 1.8.0_191
 Java vendor: IBM Corporation

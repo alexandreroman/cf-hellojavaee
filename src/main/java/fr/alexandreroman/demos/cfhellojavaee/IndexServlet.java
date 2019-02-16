@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.alexandreroman.demos.cfhellowar;
+package fr.alexandreroman.demos.cfhellojavaee;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,11 +33,10 @@ public class IndexServlet extends HttpServlet {
 
         resp.setContentType("text/plain");
         try (final PrintWriter out = resp.getWriter()) {
-            out.write("Hello WAR\nJava version: "
+            out.write("Hello JavaEE\nJava version: "
                     + javaVersion + "\nJava vendor: "
                     + javaVendor + "\nServer info: "
                     + serverInfo + "\n");
         }
     }
 }
-

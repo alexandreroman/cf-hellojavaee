@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.alexandreroman.demos</groupId>
-    <artifactId>cf-hellowar</artifactId>
+    <artifactId>cf-hellojavaee</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Cloud Foundry Hello WAR</name>
-    <description>Demo project showing how to deploy a WAR file to Cloud Foundry</description>
+    <name>JavaEE on Cloud Foundry</name>
+    <description>Demo project showing how to deploy a JavaEE app to Cloud Foundry</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

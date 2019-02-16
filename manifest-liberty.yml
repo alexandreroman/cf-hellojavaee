@@ -1,7 +1,7 @@
 ---
 applications:
-  - name: cf-hellowar
-    path: target/cf-hellowar.war
+  - name: cf-hellojavaee
+    path: target/cf-hellojavaee.war
     random-route: true
     buildpacks:
       - https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack.git
