@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package fr.alexandreroman.demos.cfhellojavaee;
+package fr.alexandreroman.demos.cfhellojavaee.war;
 
+import fr.alexandreroman.demos.cfhellojavaee.ejb.GreetingService;
+
+import javax.ejb.EJB;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +28,20 @@ import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = "/")
 public class IndexServlet extends HttpServlet {
+    @EJB
+    private GreetingService greetingService;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        final String message = greetingService.greetings("JavaEE");
+
         final String javaVersion = System.getProperty("java.version");
         final String javaVendor = System.getProperty("java.vendor");
         final String serverInfo = getServletContext().getServerInfo();
 
         resp.setContentType("text/plain");
         try (final PrintWriter out = resp.getWriter()) {
-            out.write("Hello JavaEE\nJava version: "
+            out.write(message + "\nJava version: "
                     + javaVersion + "\nJava vendor: "
                     + javaVendor + "\nServer info: "
                     + serverInfo + "\n");

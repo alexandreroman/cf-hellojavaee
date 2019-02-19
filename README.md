@@ -1,10 +1,8 @@
 # Deploy a JavaEE app to Cloud Foundry
 
-This project shows how to deploy a JavaEE app to Cloud Foundry, using two options:
-  1. [Java Buildpack](https://github.com/cloudfoundry/java-buildpack) (leveraging Apache Tomcat)
-  2. [IBM WebSphere Application Server Liberty Buildpack](https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack)
-
-Yes, that's true: you **can** [deploy a JavaEE application server to Cloud Foundry](https://content.pivotal.io/pivotal-blog/new-tools-from-pivotal-ibm-pave-the-way-for-java-ee-websphere-apps-to-move-to-cloud-foundry-and-kubernetes)!
+This project shows how to
+[deploy a JavaEE app to Cloud Foundry](https://content.pivotal.io/pivotal-blog/new-tools-from-pivotal-ibm-pave-the-way-for-java-ee-websphere-apps-to-move-to-cloud-foundry-and-kubernetes),
+using the [IBM WebSphere Application Server Liberty Buildpack](https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack).
 
 ## How to use it?
 
@@ -15,41 +13,57 @@ $ ./mvnw clean package
 
 ## Run this app locally
 
-Deploy this app on your workstation using Apache Tomcat:
-```bash
-$ ./mvnw tomcat7:run
-```
+Deploy this app on your workstation using any JEE application server, such as
+[Wildfly](https://wildfly.org). Just deploy the file `cf-hellojavaee.ear` to
+your application server.
 
 This app provides a single `HttpServlet` displaying basic informations:
 ```bash
 $ curl http://localhost:8080
-Hello JavaEE
-Java version: 11.0.1
+Hello JavaEE!
+Java version: 1.8.0_181
 Java vendor: Oracle Corporation
-Server info: Apache Tomcat/7.0.47
+Server info: WildFly Full 15.0.1.Final (WildFly Core 7.0.0.Final) - 2.0.15.Final
 ```
 
-## Deploy to Cloud Foundry using Java Buildpack
-
-By pushing a WAR file to Cloud Foundry, the Java Buildpack will automatically
-deploy this artifact using an Apache Tomcat server.
-
-Just push this application:
-```bash
-$ cf push
+The greetings message is retrieved using the stateless EJB service
+`GreetingService`:
+```java
+@Stateless
+public class GreetingService {
+    public String greetings(String who) {
+        return "Hello " + who + "!";
+    }
+}
 ```
 
-A random URL is assigned to the app. Hit this endpoint to display basic
-informations:
-```bash
-$ curl http://cf-hellojavaee-silly-kob.apps.pas.pvtl.eu
-Hello JavaEE
-Java version: 1.8.0_192
-Java vendor: Oracle Corporation
-Server info: Apache Tomcat/8.5.34
+The servlet code is that simple:
+```java
+@WebServlet(urlPatterns = "/")
+public class IndexServlet extends HttpServlet {
+    @EJB
+    private GreetingService greetingService;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        final String message = greetingService.greetings("JavaEE");
+
+        final String javaVersion = System.getProperty("java.version");
+        final String javaVendor = System.getProperty("java.vendor");
+        final String serverInfo = getServletContext().getServerInfo();
+
+        resp.setContentType("text/plain");
+        try (final PrintWriter out = resp.getWriter()) {
+            out.write(message + "\nJava version: "
+                    + javaVersion + "\nJava vendor: "
+                    + javaVendor + "\nServer info: "
+                    + serverInfo + "\n");
+        }
+    }
+}
 ```
 
-## Deploy to Cloud Foundry using WebSphere
+## Run this app on Cloud Foundry
 
 The IBM WebSphere Application Server Liberty Buildpack allows you to
 deploy JavaEE apps to Cloud Foundry, while still supporting what makes
@@ -58,15 +72,15 @@ auto scaling, etc.).
 
 Deploying a JavaEE app to Cloud Foundry requires a single command:
 ```bash
-$ cf push -f manifest-liberty.yml
+$ cf push
 ```
 
-This manifest just defines the buildpack to use as well as some license codes:
+This manifest just defines the buildpack to use:
 ```yaml
 ---
 applications:
   - name: cf-hellojavaee
-    path: target/cf-hellojavaee.war
+    path: ear/target/cf-hellojavaee.ear
     random-route: true
     buildpacks:
       - https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack.git
@@ -79,7 +93,7 @@ Your app will be deployed to Cloud Foundry in no time, using a full blown
 JavaEE application server:
 ```bash
 $ curl http://cf-hellojavaee-daring-springhare.apps.pas.pvtl.eu
-Hello WAR
+Hello JavaEE!
 Java version: 1.8.0_191
 Java vendor: IBM Corporation
 Server info: IBM WebSphere Liberty/19.0.0.1
